@@ -12,7 +12,7 @@ try {
   ENV = process.env;
 }
 
-const users = require('./routes/users');
+const times = require('./routes/times');
 
 const app = express();
 // connects react app to the backend
@@ -29,6 +29,6 @@ app.use(cookieParser())
 
 mongoose.connect(ENV.MONGODB_URI);
 
-app.use('/api/v1/users', users);
+app.use('/api/v1/earthtime', times);
 
 module.exports = app;
