@@ -1,7 +1,7 @@
 const Epoch = require('unix-timestamp');
 const SunCalc = require('suncalc');
 
-const nowEpoch = Epoch.now(),
+const nowEpoch = Math.round(new Date().getTime()/1000.0),
       today = Epoch.toDate(nowEpoch), // date rather than timestamp
       yesterday = Epoch.toDate(Epoch.now('-1d')), // date rather than timestamp
       tomorrow = Epoch.toDate(Epoch.now('1d')), // date rather than timestamp
