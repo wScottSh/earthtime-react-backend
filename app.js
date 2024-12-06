@@ -1,34 +1,27 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-
-// first use local ENV, else hit the remote one
-let ENV;
-try {
-  ENV = require('./env');
-} catch (ex) {
-  ENV = process.env;
-}
-
-const times = require('./routes/times');
 
 const app = express();
-// connects react app to the backend
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
-  next();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Serve static files from React build
+app.use(express.static(path.join(__dirname, '../earthtime-react-frontend/build')));
+
+// API Routes
+app.use('/api/v1/earthtime', require('./routes/times'));
+
+// Catch-all route for React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../earthtime-react-frontend/build', 'index.html'));
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser())
-
-mongoose.connect(ENV.MONGODB_URI);
-
-app.use('/api/v1/earthtime', times);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 module.exports = app;
